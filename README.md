@@ -1,20 +1,48 @@
+Space Catcher - Telegram Mini App Game
+
 <div align="center">
-<img width="1200" height="475" alt="GHBanner" src="https://github.com/user-attachments/assets/0aa67016-6eaf-458a-adb2-6e31a0763ed6" />
+
+![Telegram](https://img.shields.io/badge/Telegram-Mini%20App-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
+![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)
+![TypeScript](https://img.shields.io/badge/TypeScript-5.0.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+
+**Увлекательная космическая аркада прямо в Telegram!**  
+Лови зелёные шары, уворачивайся от красных кубов и становись лучшим в космосе! 🌌
+
 </div>
 
-# Run and deploy your AI Studio app
+## 🎮 О игре
 
-This contains everything you need to run your app locally.
+Space Catcher - это захватывающая аркадная игра, созданная как Telegram Mini App. Игрок управляет космическим кораблём, который должен собирать зелёные энергетические шары и избегать красных опасных кубов.
 
-View your app in AI Studio: https://ai.studio/apps/drive/1dq9gNmpH5EptmgrN27YcXaCXsQvZ2Fx5
+### ✨ Особенности
 
-## Run Locally
+- 🕹️ **Простое управление** - касаниями по экрану
+- 🌟 **Система достижений** - ачивки
+- 🚀 **Бонусы и усиления** - ускорители, щиты, множители очков
+- 👑 **Админ-режим** - специальные возможности для создателя
+- 📱 **Полная адаптация** - идеально для мобильных устройств
 
-**Prerequisites:**  Node.js
+## 🎯 Геймплей
 
+- **Зелёные шары** ➕ +1 очко
+- **Красные кубы** 💔 -1 жизнь  
+- **Золотые звёзды** ⭐ +10 очков
+- **Жёлтые треугольники** ⚡ ×2 множитель на 10 сек
+- **Фиолетовые шестиугольники** 🛡️ Щит на 10 сек
 
-1. Install dependencies:
-   `npm install`
-2. Set the `GEMINI_API_KEY` in [.env.local](.env.local) to your Gemini API key
-3. Run the app:
-   `npm run dev`
+## 🛠 Технологии
+
+- **Frontend:** React 18, TypeScript, Tailwind CSS
+- **Платформа:** Telegram Web Apps SDK
+- **Аудио:** Web Audio API
+- **Хостинг:** Firebase Hosting
+- **Сборка:** Vite
+
+## 🚀 Быстрый старт
+
+### Предварительные требования
+
+- Node.js 18+
+- Telegram аккаунт
+- Бот в @BotFather
