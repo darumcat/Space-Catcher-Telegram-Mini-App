@@ -8,6 +8,7 @@ import { ProfileScreen } from './components/ProfileScreen';
 import { AchievementToast } from './components/AchievementToast';
 import { ADMIN_ID, HIGH_SCORE_KEY, ACHIEVEMENTS_KEY, STREAK_KEY, ACHIEVEMENTS, PLATINUM_ID } from './constants';
 import { audioManager } from './audio';
+import { useTelegram } from './hooks/useTelegram';
 
 export default function App() {
   const [gameState, setGameState] = useState<GameState>(GameState.MENU);

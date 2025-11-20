@@ -292,44 +292,46 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   };
 
   const handleCollision = (type: ItemType) => {
-      state.current.bonusesCollected.add(type);
-      const isX2 = buffs.current.some(b => b.type === 'x2');
-      const isShielded = buffs.current.some(b => b.type === 'shield');
+  state.current.bonusesCollected.add(type);
+  const isX2 = buffs.current.some(b => b.type === 'x2');
+  const isShielded = buffs.current.some(b => b.type === 'shield');
 
-      if (type === 'red') {
-          if (!isAdmin && !isShielded) {
-              state.current.lives--;
-              state.current.hitRed = true;
-              state.current.consecutiveSafe = 0; // Reset combo on damage
-              audio.playBad();
-              window.Telegram?.WebApp.HapticFeedback.impactOccurred('heavy');
-          } else {
-              // Shield hit effect
-              audio.playBad(); 
-          }
-      } else {
-          // Good interactions
-          if (window.Telegram?.WebApp.HapticFeedback) {
-               window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
-          }
-          
-          if (type === 'blue') {
-              state.current.score += (isX2 ? 2 : 1);
-              state.current.collected++;
-              state.current.consecutiveSafe++; // Increase streak
-              audio.playGood();
-          } else if (type === 'gold') {
-              state.current.score += (isX2 ? 20 : 10);
-              audio.playBonus('gold');
-          } else if (type === 'yellow') {
-              buffs.current.push({ type: 'x2', endTime: Date.now() + GAME_CONFIG.BONUS_DURATION_X2 });
-              audio.playBonus('yellow');
-          } else if (type === 'purple') {
-              buffs.current.push({ type: 'shield', endTime: Date.now() + GAME_CONFIG.BONUS_DURATION_SHIELD });
-              audio.playBonus('purple');
-          }
+  if (type === 'red') {
+    if (!isAdmin && !isShielded) {
+      state.current.lives--;
+      state.current.hitRed = true;
+      state.current.consecutiveSafe = 0;
+      audio.playBad();
+      // Используем вибрацию через Telegram
+      if (window.Telegram?.WebApp?.HapticFeedback) {
+        window.Telegram.WebApp.HapticFeedback.impactOccurred('heavy');
       }
-  };
+    } else {
+      audio.playBad();
+    }
+  } else {
+    // Легкая вибрация для сбора предметов
+    if (window.Telegram?.WebApp?.HapticFeedback) {
+      window.Telegram.WebApp.HapticFeedback.impactOccurred('light');
+    }
+    
+    if (type === 'blue') {
+      state.current.score += (isX2 ? 2 : 1);
+      state.current.collected++;
+      state.current.consecutiveSafe++;
+      audio.playGood();
+    } else if (type === 'gold') {
+      state.current.score += (isX2 ? 20 : 10);
+      audio.playBonus('gold');
+    } else if (type === 'yellow') {
+      buffs.current.push({ type: 'x2', endTime: Date.now() + GAME_CONFIG.BONUS_DURATION_X2 });
+      audio.playBonus('yellow');
+    } else if (type === 'purple') {
+      buffs.current.push({ type: 'shield', endTime: Date.now() + GAME_CONFIG.BONUS_DURATION_SHIELD });
+      audio.playBonus('purple');
+    }
+  }
+};
 
   const drawHUD = (ctx: CanvasRenderingContext2D, width: number, x2: boolean, shield: boolean) => {
       // Score
