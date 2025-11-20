@@ -2,10 +2,6 @@ Space Catcher - Telegram Mini App Game
 
 <div align="center">
 
-![Telegram](https://img.shields.io/badge/Telegram-Mini%20App-2CA5E0?style=for-the-badge&logo=telegram&logoColor=white)
-![React](https://img.shields.io/badge/React-18.2.0-61DAFB?style=for-the-badge&logo=react&logoColor=white)
-![TypeScript](https://img.shields.io/badge/TypeScript-5.0.2-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
-
 **Увлекательная космическая аркада прямо в Telegram!**  
 Лови зелёные шары, уворачивайся от красных кубов и становись лучшим в космосе! 🌌
 
