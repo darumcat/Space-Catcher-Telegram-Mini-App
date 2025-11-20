@@ -1,0 +1,5 @@
+{
+  "name": "Space Catcher Telegram Mini App",
+  "description": "Простая аркадная игра для Telegram Web App с интеграцией пользователя и админ-функциями.",
+  "requestFramePermissions": []
+}
