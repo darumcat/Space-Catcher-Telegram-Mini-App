@@ -377,7 +377,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         let dynamicSpeed = 0.20 + (timePlayedSec * 0.025) + (state.current.score * 0.0005);
         if (isAbilityActive && currentShip.ability === 'speed') dynamicSpeed *= 2;
         
-        const speedLerp = Math.min(isAbilityActive && currentShip.ability === 'speed' ? 0.95 : 0.9, dynamicSpeed);
+        const speedLerp = Math.min(0.9, dynamicSpeed);
         playerX.current += (targetX.current - playerX.current) * speedLerp;
     }
     
@@ -763,7 +763,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
           {/* ABILITY BUTTON (Bottom Left) - Transparent */}
           {currentShip.ability !== 'none' && (
-              <div className="absolute bottom-6 left-6 z-30">
+              <div className="absolute bottom-32 left-6 z-30">
                   <button
                       onClick={activateAbility}
                       disabled={!abilityReady}
