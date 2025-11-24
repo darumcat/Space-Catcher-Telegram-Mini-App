@@ -52,6 +52,7 @@ export interface TelegramWebAppObject {
     impactOccurred: (style: 'light' | 'medium' | 'heavy' | 'rigid' | 'soft') => void;
     notificationOccurred: (type: 'error' | 'success' | 'warning') => void;
   };
+  openTelegramLink: (url: string) => void;
   ready: () => void;
   expand: () => void;
   close: () => void;
@@ -95,4 +96,30 @@ export interface Achievement {
   category: 'basic' | 'combo' | 'special' | 'seasonal';
   // Возвращает true, если ачивка выполнена
   condition: (stats: GameStats) => boolean;
+}
+
+// --- Новые типы для Кораблей ---
+
+export type ShipShape = 'default' | 'fighter' | 'tank' | 'ufo' | 'needle' | 'shuriken' | 'stealth' | 'ghost' | 'aegis';
+
+export type ShipAbility = 
+  | 'none' 
+  | 'shoot'      // Стреляет вперед (3 сек)
+  | 'magnet'     // Притягивает бонусы (3 сек)
+  | 'slow'       // Замедляет время (3 сек)
+  | 'clones'     // 2 клона (3 сек)
+  | 'shockwave'  // Взрывная волна (раз в 5 мин)
+  | 'speed'      // Ускорение x2 (3 сек)
+  | 'heart'      // +1 Жизнь (раз в игру)
+  | 'phase';     // Проходит сквозь красные (3 сек)
+
+export interface Ship {
+  id: string;
+  name: string;
+  color: string;
+  shape: ShipShape;
+  ability: ShipAbility;
+  // Если requiredAchievementId === 'SHARE_3', то проверяем sharesCount
+  requiredAchievementId: string | null; 
+  description: string; // Как открыть
 }

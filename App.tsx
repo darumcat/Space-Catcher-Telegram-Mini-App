@@ -6,7 +6,10 @@ import { GameCanvas } from './components/GameCanvas';
 import { GameOverScreen } from './components/GameOverScreen';
 import { ProfileScreen } from './components/ProfileScreen';
 import { AchievementToast } from './components/AchievementToast';
-import { ADMIN_ID, HIGH_SCORE_KEY, ACHIEVEMENTS_KEY, STREAK_KEY, ACHIEVEMENTS, PLATINUM_ID } from './constants';
+import { 
+  ADMIN_ID, HIGH_SCORE_KEY, ACHIEVEMENTS_KEY, STREAK_KEY, SHARES_KEY, SELECTED_SHIP_KEY,
+  ACHIEVEMENTS, PLATINUM_ID, SHIPS, BOT_USERNAME 
+} from './constants';
 import { audioManager } from './audio';
 import { useTelegram } from './hooks/useTelegram';
 
@@ -18,6 +21,10 @@ export default function App() {
   const [highScore, setHighScore] = useState<number>(0);
   const [unlockedAchievements, setUnlockedAchievements] = useState<string[]>([]);
   const [streakDays, setStreakDays] = useState<number>(0);
+  
+  // New State for Ships & Shares
+  const [sharesCount, setSharesCount] = useState<number>(0);
+  const [selectedShipId, setSelectedShipId] = useState<string>('default');
   
   // Notification queue
   const [currentAchievementToast, setCurrentAchievementToast] = useState<string | null>(null);
@@ -48,6 +55,13 @@ export default function App() {
         const streakData = JSON.parse(localStorage.getItem(STREAK_KEY) || '{}');
         setStreakDays(streakData.count || 0);
     } catch(e) { setStreakDays(0); }
+
+    // Load Shares & Ship
+    const storedShares = parseInt(localStorage.getItem(SHARES_KEY) || '0', 10);
+    setSharesCount(storedShares);
+    
+    const storedShip = localStorage.getItem(SELECTED_SHIP_KEY) || 'default';
+    setSelectedShipId(storedShip);
     
   }, []);
 
@@ -58,9 +72,6 @@ export default function App() {
 
     const handleBack = () => {
       if (gameState === GameState.PLAYING) {
-        // При нажатии "Назад" в игре тоже сохраняем прогресс, но здесь сложно получить статы.
-        // Обычно кнопка "Назад" в WebApp закрывает приложение, если мы в корне.
-        // Оставим просто выход в меню для безопасности, статы не сохранятся (системная кнопка)
         setGameState(GameState.MENU);
         audioManager.stopBgm();
       } else if (gameState === GameState.GAME_OVER || gameState === GameState.PROFILE) {
@@ -110,23 +121,19 @@ export default function App() {
       return data.count;
   };
 
-  // Using functional update to prevent stale closures in GameCanvas
   const unlockAchievement = useCallback((id: string) => {
       setUnlockedAchievements(prev => {
           if (prev.includes(id)) return prev;
           
           const newUnlocked = [...prev, id];
-          // Save immediately
           localStorage.setItem(ACHIEVEMENTS_KEY, JSON.stringify(newUnlocked));
           
-          // Show toast
           setCurrentAchievementToast(id);
           if (window.Telegram?.WebApp?.HapticFeedback) {
             window.Telegram.WebApp.HapticFeedback.notificationOccurred('success');
           }
 
-          // Check for Platinum (Recursive check)
-          // We want to check if ALL achievements EXCEPT platinum are now unlocked
+          // Check for Platinum
           if (id !== PLATINUM_ID) {
               const allNonPlatinumIds = ACHIEVEMENTS
                   .filter(a => a.id !== PLATINUM_ID)
@@ -135,7 +142,6 @@ export default function App() {
               const hasAll = allNonPlatinumIds.every(reqId => newUnlocked.includes(reqId));
               
               if (hasAll && !newUnlocked.includes(PLATINUM_ID)) {
-                  // Unlock Platinum with a slight delay for dramatic effect
                   setTimeout(() => {
                       unlockAchievement(PLATINUM_ID);
                   }, 2000);
@@ -146,7 +152,29 @@ export default function App() {
       });
   }, []);
 
-  // Централизованная логика сохранения статистики
+  // Logic to select a ship
+  const handleSelectShip = (shipId: string) => {
+      setSelectedShipId(shipId);
+      localStorage.setItem(SELECTED_SHIP_KEY, shipId);
+  };
+
+  // Logic to increment share count and open Telegram share link
+  const handleShare = (text: string) => {
+      const newCount = sharesCount + 1;
+      setSharesCount(newCount);
+      localStorage.setItem(SHARES_KEY, newCount.toString());
+
+      // Construct URL
+      const appUrl = `https://t.me/${BOT_USERNAME}/app`; // Replace with actual if known
+      const shareUrl = `https://t.me/share/url?url=${encodeURIComponent(appUrl)}&text=${encodeURIComponent(text)}`;
+      
+      if (window.Telegram?.WebApp) {
+          window.Telegram.WebApp.openTelegramLink(shareUrl);
+      } else {
+          window.open(shareUrl, '_blank');
+      }
+  };
+
   const processGameStats = useCallback((stats: GameStats) => {
     setLastScore(stats.score);
     
@@ -155,11 +183,9 @@ export default function App() {
       localStorage.setItem(HIGH_SCORE_KEY, stats.score.toString());
     }
 
-    // Update Streak
     const newStreak = updateStreak(stats.score);
     const finalStats = { ...stats, streakDays: newStreak || streakDays };
 
-    // Check All Achievements
     ACHIEVEMENTS.forEach(ach => {
         if (ach.id !== PLATINUM_ID && ach.condition(finalStats)) {
             unlockAchievement(ach.id);
@@ -206,7 +232,11 @@ export default function App() {
             user={user}
             highScore={highScore}
             unlockedAchievements={unlockedAchievements}
+            sharesCount={sharesCount}
+            selectedShipId={selectedShipId}
+            onSelectShip={handleSelectShip}
             onBack={() => setGameState(GameState.MENU)}
+            onShare={handleShare}
           />
       )}
 
@@ -214,6 +244,7 @@ export default function App() {
         <GameCanvas 
           isAdmin={isAdmin} 
           streakDays={streakDays}
+          selectedShipId={selectedShipId}
           onGameOver={handleGameOver}
           onAchievement={unlockAchievement}
           onExit={handleManualExit}
@@ -227,6 +258,7 @@ export default function App() {
           highScore={highScore} 
           onRestart={startGame}
           onMenu={() => setGameState(GameState.MENU)}
+          onShare={handleShare}
         />
       )}
     </div>
