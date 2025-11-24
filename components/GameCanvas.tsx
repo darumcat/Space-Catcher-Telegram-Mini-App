@@ -377,7 +377,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         let dynamicSpeed = 0.60 + (timePlayedSec * 0.025) + (state.current.score * 0.0005);
         if (isAbilityActive && currentShip.ability === 'speed') dynamicSpeed *= 2;
         
-        const speedLerp = Math.min(0.9, dynamicSpeed);
+        const speedLerp = Math.min(2.0, dynamicSpeed);
         playerX.current += (targetX.current - playerX.current) * speedLerp;
     }
     
