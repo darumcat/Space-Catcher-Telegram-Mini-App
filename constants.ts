@@ -2,7 +2,7 @@
 import { Achievement, ItemType, Ship, ShipShape } from './types';
 
 export const ADMIN_ID = 441555440;
-export const BOT_USERNAME = 'Space_CatcherBot'; 
+export const BOT_USERNAME = 'SpaceCatcherBot'; 
 
 // Настройки игры
 export const GAME_CONFIG = {
@@ -12,7 +12,7 @@ export const GAME_CONFIG = {
   PLAYER_SIZE: 40,
   OBJECT_SIZE: 30,
   LIVES_START: 3,
-  SPEED_INCREMENT: 0.3,
+  SPEED_INCREMENT: 0.2,
   
   // Бонусы
   BONUS_DURATION_X2: 5000, 

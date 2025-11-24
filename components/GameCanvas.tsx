@@ -53,13 +53,16 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   const currentShip = SHIPS.find(s => s.id === selectedShipId) || SHIPS[0];
   
   // Ability State
+  // We use REF for logic inside the loop to avoid stale closures, and STATE for UI updates.
+  const abilityReadyRef = useRef(true);
   const [abilityReady, setAbilityReady] = useState(true);
-  const [abilityActive, setAbilityActive] = useState(false); // For UI effect
+  
   const [, setTick] = useState(0); // Tick to force update for cooldown animation
 
   const lastAbilityUsage = useRef<number>(0);
   const abilityEndTime = useRef<number>(0);
   const heartUsed = useRef(false); // For Heart ability (once per game)
+  const lastShotTime = useRef<number>(0);
 
   // Game State Refs
   const state = useRef({
@@ -188,8 +191,10 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     lastAbilityUsage.current = 0;
     abilityEndTime.current = 0;
     heartUsed.current = false;
-    setAbilityReady(currentShip.ability !== 'none');
-    setAbilityActive(false);
+    
+    const hasAbility = currentShip.ability !== 'none';
+    setAbilityReady(hasAbility);
+    abilityReadyRef.current = hasAbility;
     
     const timestamp = performance.now();
     nextGoldSpawn.current = timestamp + GAME_CONFIG.SPAWN_GOLD;
@@ -232,17 +237,19 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
           }
           audio.playBonus('yellow'); // Reuse sound
           lastAbilityUsage.current = now;
+          abilityReadyRef.current = false;
           setAbilityReady(false);
       } else if (currentShip.ability === 'heart') {
           state.current.lives += 1;
           heartUsed.current = true;
           audio.playBonus('purple');
+          abilityReadyRef.current = false;
           setAbilityReady(false); // Used once
       } else {
           // Duration effect
           abilityEndTime.current = now + GAME_CONFIG.ABILITY_DURATION;
           lastAbilityUsage.current = now;
-          setAbilityActive(true);
+          abilityReadyRef.current = false;
           setAbilityReady(false);
           audio.playBonus('blue');
       }
@@ -314,11 +321,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
     // Ability Active Status Check
     const isAbilityActive = wallTime < abilityEndTime.current;
-    if (abilityActive && !isAbilityActive) setAbilityActive(false);
-
-    // Update Ability Cooldown UI
-    if (!abilityReady && currentShip.ability !== 'none' && currentShip.ability !== 'heart') {
+    
+    // Update Ability Cooldown Logic
+    // Use Ref to avoid stale closure issues in the game loop
+    if (!abilityReadyRef.current && currentShip.ability !== 'none' && currentShip.ability !== 'heart') {
          if (wallTime - lastAbilityUsage.current >= GAME_CONFIG.ABILITY_COOLDOWN) {
+             abilityReadyRef.current = true;
              setAbilityReady(true);
          }
     }
@@ -354,8 +362,11 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     }
 
     // Projectiles Spawn (Shoot ability)
-    if (isAbilityActive && currentShip.ability === 'shoot' && Math.floor(time) % 15 === 0) {
-        projectiles.current.push({ id: Math.random(), x: playerX.current, y: height - 90 });
+    if (isAbilityActive && currentShip.ability === 'shoot') {
+        if (now - lastShotTime.current > 200) { // Approx 5 shots per second
+             projectiles.current.push({ id: Math.random(), x: playerX.current, y: height - 90 });
+             lastShotTime.current = now;
+        }
     }
 
     // Movement with Dynamic Speed (EVEN FASTER)
