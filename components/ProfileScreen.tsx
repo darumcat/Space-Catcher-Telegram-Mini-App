@@ -1,5 +1,4 @@
 
-
 import React, { useState } from 'react';
 import { TelegramUser, Ship } from '../types';
 import { ACHIEVEMENTS, SHIPS, SHARE_UNLOCK_ID, BOT_USERNAME, SHIP_DESIGNS } from '../constants';
@@ -222,8 +221,9 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                     <h3 className="text-lg font-bold text-white mb-3 border-b border-slate-700 pb-2">⚡ Суперспособности</h3>
                     <p className="mb-2">Некоторые корабли обладают уникальными навыками. Активируются кнопкой на экране (внизу слева).</p>
                     <ul className="space-y-1 list-disc list-inside text-slate-400 text-xs mb-4">
-                        <li><span className="text-white font-bold">Перезарядка:</span> 5 минут.</li>
-                        <li><span className="text-white font-bold">Длительность:</span> 3 секунды (если не указано иное).</li>
+                        <li><span className="text-white font-bold">Перезарядка:</span> 30 секунд.</li>
+                        <li><span className="text-white font-bold">Длительность:</span> 5 секунд.</li>
+                        <li><span className="text-white font-bold">Исключение:</span> Сердце (1 раз за игру).</li>
                     </ul>
                     <div className="grid grid-cols-1 gap-3">
                         <div className="bg-slate-800/40 p-3 rounded-lg border border-slate-700/50">
@@ -269,7 +269,7 @@ export const ProfileScreen: React.FC<ProfileScreenProps> = ({
                             <div><span className="text-blue-400 font-bold">Сфера</span>: +1 очко. Основной ресурс.</div>
                         </div>
                         <div className="flex items-center gap-3">
-                            <div className="w-6 h-6 bg-[#4a2c2a] border border-red-500/50 rounded-sm"></div>
+                            <div className="w-6 h-6 bg-[#3e2723] border border-red-500/50 rounded-sm"></div>
                             <div><span className="text-red-400 font-bold">Метеорит</span>: -1 жизнь. Прерывает комбо.</div>
                         </div>
                         <div className="flex items-center gap-3">

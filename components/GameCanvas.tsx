@@ -1,5 +1,4 @@
 
-
 import React, { useRef, useEffect, useState } from 'react';
 import { GAME_CONFIG, ITEM_COLORS, SHIPS, SHIP_DESIGNS } from '../constants';
 import { ItemType, GameStats, ShipShape, ShipAbility } from '../types';
@@ -459,33 +458,31 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         ctx.shadowBlur = 15;
 
         if (obj.type === 'red') {
-            // Meteorite Drawing
-            ctx.rotate(time * 0.003 + obj.id); // Add random rotation based on ID
+            // Meteorite Drawing - Enhanced
+            ctx.rotate(time * 0.002 + obj.id); // Add random rotation based on ID
             ctx.beginPath();
-            const spikes = 7;
+            const spikes = 6; // Fewer spikes for rock look
             const outerRadius = obj.size / 2;
-            const innerRadius = obj.size / 3;
+            const innerRadius = obj.size / 2.5;
 
             // Jagged rock shape
             for (let k = 0; k < spikes * 2; k++) {
-                const r = (k % 2 === 0) ? outerRadius : innerRadius + (Math.sin(k + obj.id) * 3); // Vary radius
+                const r = (k % 2 === 0) ? outerRadius : innerRadius + (Math.sin(k * 123 + obj.id) * 4); 
                 const a = (Math.PI * k) / spikes;
                 ctx.lineTo(Math.cos(a) * r, Math.sin(a) * r);
             }
             ctx.closePath();
             ctx.fill();
             
-            // Add "Danger" outline (Red glow)
-            ctx.strokeStyle = '#ef4444'; // Red-500
-            ctx.lineWidth = 2;
-            ctx.shadowColor = '#ef4444';
-            ctx.shadowBlur = 10;
+            // Texture/Cracks
+            ctx.strokeStyle = '#5d4037';
+            ctx.lineWidth = 1;
             ctx.stroke();
 
             // Pits/Craters detail
-            ctx.fillStyle = 'rgba(0,0,0,0.3)';
+            ctx.fillStyle = 'rgba(0,0,0,0.4)';
             ctx.beginPath();
-            ctx.arc(obj.size/5, -obj.size/5, obj.size/6, 0, Math.PI*2);
+            ctx.arc(obj.size/6, -obj.size/6, obj.size/5, 0, Math.PI*2);
             ctx.fill();
 
         } else if (obj.type === 'blue') {
@@ -744,7 +741,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
           {/* ABILITY BUTTON (Bottom Left) - Transparent */}
           {currentShip.ability !== 'none' && (
-              <div className="absolute bottom-24 left-6 z-30">
+              <div className="absolute bottom-6 left-6 z-30">
                   <button
                       onClick={activateAbility}
                       disabled={!abilityReady}

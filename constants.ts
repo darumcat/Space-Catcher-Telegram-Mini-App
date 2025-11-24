@@ -1,5 +1,4 @@
 
-
 import { Achievement, ItemType, Ship, ShipShape } from './types';
 
 export const ADMIN_ID = 441555440;
@@ -27,7 +26,7 @@ export const GAME_CONFIG = {
 
   // Суперспособности
   ABILITY_COOLDOWN: 30000, // 30 секунд
-  ABILITY_DURATION: 5000, // 5 секунды
+  ABILITY_DURATION: 5000, // 5 секунд
 };
 
 export const HIGH_SCORE_KEY = 'sc_highscore_v3'; 
@@ -39,7 +38,7 @@ export const SELECTED_SHIP_KEY = 'sc_selected_ship_v1';
 // Цвета объектов
 export const ITEM_COLORS: Record<ItemType, string> = {
   blue: '#3b82f6',   
-  red: '#4a2c2a', // Brownish-Meteorite color   
+  red: '#3e2723', // Dark Meteorite Brown  
   gold: '#fbbf24',   
   yellow: '#facc15', 
   purple: '#a855f7', 
