@@ -305,12 +305,15 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     const isAbilityActive = wallTime < abilityEndTime.current;
     if (abilityActive && !isAbilityActive) setAbilityActive(false);
 
-    // Update Ability Cooldown UI
-    if (!abilityReady && currentShip.ability !== 'none' && currentShip.ability !== 'heart') {
-         if (wallTime - lastAbilityUsage.current >= GAME_CONFIG.ABILITY_COOLDOWN) {
-             setAbilityReady(true);
-         }
+   // Update Ability Cooldown UI
+if (!abilityReady && currentShip.ability !== 'none') {
+    // Для heart способности не обновляем готовность (она одноразовая)
+    if (currentShip.ability !== 'heart') {
+        if (wallTime - lastAbilityUsage.current >= GAME_CONFIG.ABILITY_COOLDOWN) {
+            setAbilityReady(true);
+        }
     }
+}
 
     // Active Buffs
     buffs.current = buffs.current.filter(b => b.endTime > wallTime);
