@@ -744,7 +744,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
           {/* ABILITY BUTTON (Bottom Left) - Transparent */}
           {currentShip.ability !== 'none' && (
-              <div className="absolute bottom-6 left-6 z-30">
+              <div className="absolute bottom-24 left-6 z-30">
                   <button
                       onClick={activateAbility}
                       disabled={!abilityReady}

@@ -3,7 +3,7 @@
 import { Achievement, ItemType, Ship, ShipShape } from './types';
 
 export const ADMIN_ID = 441555440;
-export const BOT_USERNAME = 'SpaceCatcherBot'; 
+export const BOT_USERNAME = 'Space_CatcherBot'; 
 
 // Настройки игры
 export const GAME_CONFIG = {
@@ -26,8 +26,8 @@ export const GAME_CONFIG = {
   CHANCE_RED: 0.25, 
 
   // Суперспособности
-  ABILITY_COOLDOWN: 300000, // 5 минут
-  ABILITY_DURATION: 3000, // 3 секунды
+  ABILITY_COOLDOWN: 30000, // 30 секунд
+  ABILITY_DURATION: 5000, // 5 секунды
 };
 
 export const HIGH_SCORE_KEY = 'sc_highscore_v3'; 
