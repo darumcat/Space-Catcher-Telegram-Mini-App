@@ -55,6 +55,8 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
   // Ability State
   const [abilityReady, setAbilityReady] = useState(true);
   const [abilityActive, setAbilityActive] = useState(false); // For UI effect
+  const [, setTick] = useState(0); // Tick to force update for cooldown animation
+
   const lastAbilityUsage = useRef<number>(0);
   const abilityEndTime = useRef<number>(0);
   const heartUsed = useRef(false); // For Heart ability (once per game)
@@ -112,6 +114,15 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         if (animationFrameId.current) cancelAnimationFrame(animationFrameId.current);
     };
   }, []);
+
+  // Force re-render for cooldown animation logic
+  useEffect(() => {
+      if (abilityReady) return;
+      const interval = setInterval(() => {
+          setTick(t => t + 1);
+      }, 100);
+      return () => clearInterval(interval);
+  }, [abilityReady]);
 
   // Pause logic
   useEffect(() => {
@@ -305,15 +316,12 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     const isAbilityActive = wallTime < abilityEndTime.current;
     if (abilityActive && !isAbilityActive) setAbilityActive(false);
 
-   // Update Ability Cooldown UI
-if (!abilityReady && currentShip.ability !== 'none') {
-    // Для heart способности не обновляем готовность (она одноразовая)
-    if (currentShip.ability !== 'heart') {
-        if (wallTime - lastAbilityUsage.current >= GAME_CONFIG.ABILITY_COOLDOWN) {
-            setAbilityReady(true);
-        }
+    // Update Ability Cooldown UI
+    if (!abilityReady && currentShip.ability !== 'none' && currentShip.ability !== 'heart') {
+         if (wallTime - lastAbilityUsage.current >= GAME_CONFIG.ABILITY_COOLDOWN) {
+             setAbilityReady(true);
+         }
     }
-}
 
     // Active Buffs
     buffs.current = buffs.current.filter(b => b.endTime > wallTime);
@@ -770,7 +778,7 @@ if (!abilityReady && currentShip.ability !== 'none') {
                                 fill="none" 
                                 strokeDasharray="226" // 2 * PI * 36
                                 strokeDashoffset={226 - (226 * getCooldownPct() / 100)}
-                                className="transition-all duration-1000 linear"
+                                className="transition-all duration-100 linear"
                               />
                           </svg>
                       )}
