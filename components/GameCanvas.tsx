@@ -369,15 +369,21 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
         }
     }
 
-    // Movement with Dynamic Speed (EVEN FASTER)
+    // Movement with Dynamic Speed - FIXED
+    // Calculated based on time played regardless of touch status.
+    // Base 0.20 + 0.04 per second. 
+    // At 10s: 0.6. At 20s: 1.0. 
+    let dynamicSpeed = 0.20 + (timePlayedSec * 0.04);
+    
+    if (isAbilityActive && currentShip.ability === 'speed') {
+        // Ability guarantees minimum 0.85 responsiveness immediately
+        dynamicSpeed = Math.max(0.85, dynamicSpeed * 2.5);
+    }
+    
+    // Cap responsiveness at 0.95
+    const speedLerp = Math.min(0.95, dynamicSpeed);
+
     if (isTouching.current) {
-        // Base: 0.20
-        // Ramp: +5 per second
-        // Score: +0.0005 per point
-        let dynamicSpeed = 0.20 + (timePlayedSec * 5.0) + (state.current.score * 1.0);
-        if (isAbilityActive && currentShip.ability === 'speed') dynamicSpeed *= 2;
-        
-        const speedLerp = Math.min(isAbilityActive && currentShip.ability === 'speed' ? 0.95 : 0.9, dynamicSpeed);
         playerX.current += (targetX.current - playerX.current) * speedLerp;
     }
     
@@ -763,7 +769,7 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
 
           {/* ABILITY BUTTON (Bottom Left) - Transparent */}
           {currentShip.ability !== 'none' && (
-              <div className="absolute bottom-32 left-6 z-30">
+              <div className="absolute bottom-6 left-6 z-30">
                   <button
                       onClick={activateAbility}
                       disabled={!abilityReady}
