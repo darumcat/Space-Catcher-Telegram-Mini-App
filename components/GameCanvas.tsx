@@ -372,9 +372,9 @@ export const GameCanvas: React.FC<GameCanvasProps> = ({
     // Movement with Dynamic Speed (EVEN FASTER)
     if (isTouching.current) {
         // Base: 0.20
-        // Ramp: +0.02 per second
+        // Ramp: +1.5 per second
         // Score: +0.0005 per point
-        let dynamicSpeed = 0.20 + (timePlayedSec * 0.7) + (state.current.score * 0.05);
+        let dynamicSpeed = 0.20 + (timePlayedSec * 1.5) + (state.current.score * 0.05);
         if (isAbilityActive && currentShip.ability === 'speed') dynamicSpeed *= 2;
         
         const speedLerp = Math.min(isAbilityActive && currentShip.ability === 'speed' ? 0.95 : 0.9, dynamicSpeed);
